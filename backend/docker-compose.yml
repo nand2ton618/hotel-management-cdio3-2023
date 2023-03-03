@@ -1,0 +1,43 @@
+version: '3.9'
+services:
+  pg:
+    image: postgres
+    container_name: pg
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=hotelmanagement
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      # be careful, run the below comment can cause lost data persistent
+      # - ./database:/docker-entrypoint-initdb.d/
+      - postgres-hotel-management-database:/var/lib/postgresql
+    networks:
+      - postgres-proxy-network
+
+  pgadmin4:
+    image: dpage/pgadmin4
+    container_name: pgadmin4
+    depends_on:
+      - pg
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=12345
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./servers-pgadmin4-config.json:/pgadmin4/servers.json
+    networks:
+      - postgres-proxy-network
+
+volumes:
+  postgres-hotel-management-database:
+    name: postgres-hotel-management-database
+
+networks:
+  postgres-proxy-network:
+    name: postgres-proxy-network
+    driver: bridge

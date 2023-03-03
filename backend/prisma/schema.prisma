@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model booking {
+  id              Int      @id @default(autoincrement())
+  customer_id     Int
+  customer        customer @relation(fields: [customer_id], references: [id])
+  room_id         Int
+  room            room     @relation(fields: [room_id], references: [id])
+  booking_date    DateTime @default(now())
+  check_in        String
+  check_out       String
+  total_price     Int
+  remaining_price Int
+  payment_status  Boolean
+}
+
+model complaint {
+  id               Int      @id @default(autoincrement())
+  complainant_name String
+  complaint_type   String
+  complaint        String
+  created_at       DateTime @default(now())
+  resolve_status   Boolean
+  resolve_date     DateTime
+  budget           Decimal  @db.Decimal(18, 0)
+}
+
+model customer {
+  id            Int       @id @default(autoincrement())
+  customer_name String
+  phone_number  String
+  email         String
+  address       String
+  card_number   String
+  card_type     card_type @relation(fields: [card_typeId], references: [id])
+  card_typeId   Int
+
+  booking booking[]
+}
+
+model staff_history {
+  id         Int      @id @default(autoincrement())
+  staff_id   Int
+  staff      staff    @relation(fields: [staff_id], references: [id])
+  shift_id   Int
+  shift      shift    @relation(fields: [shift_id], references: [id])
+  from_date  DateTime @default(now())
+  to_date    DateTime
+  created_at DateTime @default(now())
+}
+
+model card_type {
+  id        Int        @id @default(autoincrement())
+  card_type String
+  customer  customer[]
+}
+
+model room {
+  id               Int       @id @default(autoincrement())
+  room_type        room_type @relation(fields: [room_type_id], references: [id])
+  room_type_id     Int
+  room_number      String    @db.VarChar(10)
+  status           Int
+  check_in_status  Int
+  check_out_status Int
+  delete_status    Int
+  booking          booking[]
+}
+
+model room_type {
+  id         Int    @id @default(autoincrement())
+  room_type  String
+  price      Int
+  max_person Int
+  room       room[]
+}
+
+model shift {
+  id            Int             @id @default(autoincrement())
+  shift         String
+  shift_timing  String
+  staff         staff[]
+  staff_history staff_history[]
+}
+
+model staff {
+  id            Int             @id @default(autoincrement())
+  staff_name    String
+  staff_type_id Int
+  staff_type    staff_type      @relation(fields: [staff_type_id], references: [id])
+  shift_id      Int
+  shiff         shift           @relation(fields: [shift_id], references: [id])
+  card_type     Int
+  card_number   Int
+  address       String
+  phone_number  String
+  salary        Decimal         @db.Decimal(18, 0)
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+  staff_history staff_history[]
+}
+
+model staff_type {
+  id         Int     @id @default(autoincrement())
+  staff_type String
+  staff      staff[]
+}
+
+model user {
+  id         Int      @id @default(autoincrement())
+  name       String
+  username   String
+  email      String
+  password   String
+  created_at DateTime @default(now())
+}
