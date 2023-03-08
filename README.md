@@ -1,5 +1,5 @@
 # hotel-management-cdio3-2023
 
 ## Tech stack:
-### Backend: NodeJs(Express), Prisma, PostgreSQL, Redis for Jwt
-### Frontend: React, Redux, Sass
+### Backend: NodeJS, express(typescript), prisma, postgreSQL, redis for jwt
+### Frontend: react, redux, react-query, sass
