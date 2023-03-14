@@ -1,9 +1,11 @@
-import dotenv from 'dotenv'
-dotenv.config()
-import app from './app'
+import config from '@config'
+import Logger from '@utils/logger.util'
+import App from './app'
 
-const port = process.env.PORT || 3000
+const port = config.port
 
-app.listen(port, () => {
-  console.log(`App is running on port ${port}`)
+const server = new App().server
+
+server.listen(port, () => {
+  Logger.info(`App is running at http://localhost:${port}`)
 })

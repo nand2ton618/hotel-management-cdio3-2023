@@ -7,9 +7,10 @@ import cookieParser from 'cookie-parser'
 import yamljs from 'yamljs'
 import swaggerUi from 'swagger-ui-express'
 import path from 'path'
-import bookingRouter from './routes/booking.route'
-import cardTypeRouter from './routes/card-type'
 import morgan from 'morgan'
+import router from '@routes'
+import 'resources/redis'
+import errorMiddleware from '@middlewares/error.middleware'
 
 class App {
   public server
@@ -20,6 +21,7 @@ class App {
     this.initializeSecurity()
     this.initializeMiddleware()
     this.initializeRoute()
+    this.initializeErrorMiddleware()
     this.initializeSwagger()
   }
 
@@ -32,6 +34,10 @@ class App {
     if (process.env.NODE_ENV === 'development') {
       this.server.use(morgan('dev'))
     }
+  }
+
+  initializeErrorMiddleware() {
+    this.server.use(errorMiddleware)
   }
 
   initializeSecurity() {
@@ -50,9 +56,14 @@ class App {
   }
 
   initializeRoute() {
-    this.server.use('/api/v1/booking', bookingRouter)
-    this.server.use('/api/v1/card-type', cardTypeRouter)
+    this.server.use('/api/v1', router)
+    // this.server.use('/api/v1/booking', bookingRouter)
+    // this.server.use('/api/v1/card-type', cardTypeRouter)
+
+    this.server.use('/healthcheck', (_, res) => {
+      res.status(200).send('Ok')
+    })
   }
 }
 
-export default new App().server
+export default App

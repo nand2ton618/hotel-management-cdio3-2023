@@ -4,12 +4,7 @@ export interface IStatusCode {
 }
 
 class HttpException extends Error {
-  constructor(
-    public name: string,
-    public message: string,
-    public statusCode: IStatusCode,
-    public time?: number
-  ) {
+  constructor(public message: string, public statusCode: IStatusCode) {
     super(message)
   }
 }

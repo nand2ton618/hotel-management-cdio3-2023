@@ -1,0 +1,130 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table booking {
+  id Int [pk, increment]
+  customer_id Int [not null]
+  room_id Int [not null]
+  booking_date DateTime [default: `now()`, not null]
+  check_in String [not null]
+  check_out String [not null]
+  total_price Int [not null]
+  remaining_price Int [not null]
+  payment_status Boolean [not null]
+  customer customer [not null]
+  room room [not null]
+}
+
+Table complaint {
+  id Int [pk, increment]
+  complainant_name String [not null]
+  complaint_type String [not null]
+  complaint String [not null]
+  created_at DateTime [default: `now()`, not null]
+  resolve_status Boolean [not null]
+  resolve_date DateTime [not null]
+  budget Decimal [not null]
+}
+
+Table card_type {
+  id Int [pk, increment]
+  card_type String [not null]
+  customers customer [not null]
+  employees employee [not null]
+}
+
+Table room {
+  id Int [pk, increment]
+  room_type_id Int [not null]
+  room_number String [not null]
+  status Int [not null]
+  check_in_status Int [not null]
+  check_out_status Int [not null]
+  delete_status Int [not null]
+  room_type room_type [not null]
+  bookings booking [not null]
+}
+
+Table room_type {
+  id Int [pk, increment]
+  room_type String [not null]
+  price Int [not null]
+  max_person Int [not null]
+  rooms room [not null]
+}
+
+Table user {
+  id Int [pk, increment]
+  username String [not null]
+  email String [unique, not null]
+  phone_number String [not null]
+  password String [not null]
+  address String [not null]
+  role role [not null, default: 'CUSTOMER']
+  is_active Boolean [not null]
+  created_at DateTime [default: `now()`, not null]
+  customers customer [not null]
+  employees employee [not null]
+}
+
+Table customer {
+  id Int [pk, increment]
+  user_id Int [not null]
+  card_number String [not null]
+  card_type_id Int [not null]
+  user user [not null]
+  card_type card_type [not null]
+  bookings booking [not null]
+}
+
+Table employee {
+  id Int [pk, increment]
+  user_id Int [not null]
+  card_number Int [not null]
+  card_type_id Int [not null]
+  employee_type_id Int [not null]
+  shift_id Int [not null]
+  salary Decimal [not null]
+  employee_type employee_type [not null]
+  card_type card_type [not null]
+  user user [not null]
+  shiff shift [not null]
+}
+
+Table employee_type {
+  id Int [pk, increment]
+  employee_type String [not null]
+  employees employee [not null]
+}
+
+Table shift {
+  id Int [pk, increment]
+  shift String [not null]
+  shift_timing String [not null]
+  employees employee [not null]
+}
+
+Enum role {
+  ADMIN
+  EMPLOYEE
+  CUSTOMER
+}
+
+Ref: booking.customer_id > customer.id
+
+Ref: booking.room_id > room.id
+
+Ref: room.room_type_id > room_type.id
+
+Ref: customer.user_id > user.id
+
+Ref: customer.card_type_id > card_type.id
+
+Ref: employee.employee_type_id > employee_type.id
+
+Ref: employee.card_type_id > card_type.id
+
+Ref: employee.user_id > user.id
+
+Ref: employee.shift_id > shift.id
