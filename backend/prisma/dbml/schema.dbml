@@ -38,6 +38,7 @@ Table room {
   id Int [pk, increment]
   room_type_id Int [not null]
   room_number String [not null]
+  description String [not null]
   status Int [not null]
   check_in_status Int [not null]
   check_out_status Int [not null]
